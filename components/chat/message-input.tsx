@@ -3,26 +3,17 @@
 import type React from "react"
 
 import { useRef } from "react"
-import { cn } from "@/lib/utils"
 import { Send, Smile, Paperclip } from "lucide-react"
-import IconButton from "@/components/chat/icon-button"
-import type { ThemeColors } from "@/types/theme"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 interface MessageInputProps {
   newMessage: string
   setNewMessage: (message: string) => void
   handleSendMessage: (e: React.FormEvent) => void
-  theme: "light" | "dark"
-  currentTheme: ThemeColors
 }
 
-export default function MessageInput({
-  newMessage,
-  setNewMessage,
-  handleSendMessage,
-  theme,
-  currentTheme,
-}: MessageInputProps) {
+export default function MessageInput({ newMessage, setNewMessage, handleSendMessage }: MessageInputProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -33,44 +24,45 @@ export default function MessageInput({
   }
 
   return (
-    <div className={cn("border-t p-4 backdrop-blur-sm", currentTheme.header, currentTheme.border)}>
+    <div className="border-t p-4 bg-background/80 backdrop-blur-sm">
       <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
-        <IconButton
-          icon={<Smile size={20} />}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={() => inputRef.current?.focus()}
-          label="Add emoji"
-          className={cn("p-3 rounded-full", currentTheme.hover, currentTheme.textSecondary)}
-        />
-        <IconButton
-          icon={<Paperclip size={20} />}
+          aria-label="Add emoji"
+        >
+          <Smile size={20} />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={() => inputRef.current?.focus()}
-          label="Attach file"
-          className={cn("p-3 rounded-full", currentTheme.hover, currentTheme.textSecondary)}
-        />
-        <input
+          aria-label="Attach file"
+        >
+          <Paperclip size={20} />
+        </Button>
+        <Input
           ref={inputRef}
           type="text"
           value={newMessage}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
-          className={cn(
-            "flex-1 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 font-inter transition-all duration-200",
-            currentTheme.input,
-          )}
+          className="flex-1 rounded-full"
           aria-label="Message input"
         />
-        <IconButton
+        <Button
           type="submit"
-          icon={<Send size={20} />}
-          label="Send message"
-          className={cn(
-            "p-3 rounded-full text-white",
-            "bg-gradient-to-r from-indigo-500 to-purple-600",
-            !newMessage.trim() && "opacity-70 cursor-not-allowed",
-          )}
+          size="icon"
+          className="rounded-full"
           disabled={!newMessage.trim()}
-        />
+          aria-label="Send message"
+        >
+          <Send size={20} />
+        </Button>
       </form>
     </div>
   )

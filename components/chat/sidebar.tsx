@@ -1,13 +1,11 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
-import { Moon, Sun, MessageSquare, MoreVertical } from "lucide-react"
-import Avatar from "@/components/chat/avatar"
-import IconButton from "@/components/chat/icon-button"
+import { MessageSquare } from "lucide-react"
 import UserListItem from "@/components/chat/user-list-item"
+import { Input } from "@/components/ui/input"
+import { ModeToggle } from "@/components/mode-toggle"
 import type { ChatData } from "@/types/chat"
-import type { ThemeColors } from "@/types/theme"
 
 interface SidebarProps {
   data: ChatData
@@ -15,28 +13,14 @@ interface SidebarProps {
   setSelectedUser: (userId: number) => void
   sidebarOpen: boolean
   windowWidth: number
-  theme: "light" | "dark"
-  currentTheme: ThemeColors
-  toggleTheme: () => void
-  getAvatarGradient: (userId: number) => string
 }
 
-export default function Sidebar({
-  data,
-  selectedUser,
-  setSelectedUser,
-  sidebarOpen,
-  windowWidth,
-  theme,
-  currentTheme,
-  toggleTheme,
-  getAvatarGradient,
-}: SidebarProps) {
+export default function Sidebar({ data, selectedUser, setSelectedUser, sidebarOpen, windowWidth }: SidebarProps) {
   return (
     <AnimatePresence>
       {(sidebarOpen || windowWidth >= 768) && (
         <motion.div
-          className={cn("fixed md:relative z-40 h-full w-72 flex-shrink-0 shadow-lg", currentTheme.sidebar)}
+          className="fixed md:relative z-40 h-full w-72 flex-shrink-0 border-r bg-background"
           initial={{ x: -280 }}
           animate={{ x: 0 }}
           exit={{ x: -280 }}
@@ -46,46 +30,27 @@ export default function Sidebar({
         >
           <div className="flex flex-col h-full">
             {/* Sidebar header with app title and theme toggle */}
-            <div className={cn("p-4 border-b flex items-center justify-between", currentTheme.border)}>
+            <div className="p-4 border-b flex items-center justify-between">
               <motion.h1
                 className="text-xl font-semibold font-poppins flex items-center"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <MessageSquare className="mr-2 text-indigo-500" size={24} />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">
-                  ChatApp
-                </span>
+                <MessageSquare className="mr-2 text-primary" size={24} />
+                <span className="text-primary">ChatApp</span>
               </motion.h1>
-              <IconButton
-                icon={theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
-                onClick={toggleTheme}
-                label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-                className={currentTheme.hover}
-              />
+              <ModeToggle />
             </div>
 
             {/* User search input */}
             <div className="p-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search users..."
-                  className={cn(
-                    "w-full p-2 pl-3 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-inter text-sm transition-all duration-200",
-                    currentTheme.input,
-                  )}
-                  aria-label="Search users"
-                />
-              </div>
+              <Input type="text" placeholder="Search users..." className="w-full" aria-label="Search users" />
             </div>
 
             {/* User list with staggered animation */}
             <div className="flex-1 overflow-y-auto">
-              <h2 className={cn("px-4 py-2 text-xs font-semibold uppercase", currentTheme.textSecondary)}>
-                Recent Chats
-              </h2>
+              <h2 className="px-4 py-2 text-xs font-semibold uppercase text-muted-foreground">Recent Chats</h2>
               <motion.ul
                 initial="hidden"
                 animate="visible"
@@ -107,30 +72,20 @@ export default function Sidebar({
                     user={user}
                     isSelected={selectedUser === user.id}
                     onClick={() => setSelectedUser(user.id)}
-                    theme={theme}
-                    getAvatarGradient={getAvatarGradient}
                   />
                 ))}
               </motion.ul>
             </div>
 
             {/* Current user profile section */}
-            <div className={cn("p-4 border-t flex items-center", currentTheme.border)}>
-              <Avatar
-                userId={data.currentUser.id}
-                showStatus={true}
-                data={data}
-                getAvatarGradient={getAvatarGradient}
-              />
+            <div className="p-4 border-t flex items-center">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium">
+                {data.currentUser.avatar}
+              </div>
               <div className="ml-3">
                 <p className="font-medium text-sm">{data.currentUser.name}</p>
-                <p className={cn("text-xs", currentTheme.textSecondary)}>Online</p>
+                <p className="text-xs text-muted-foreground">Online</p>
               </div>
-              <IconButton
-                icon={<MoreVertical size={18} />}
-                label="User settings"
-                className={cn("ml-auto", currentTheme.hover)}
-              />
             </div>
           </div>
         </motion.div>

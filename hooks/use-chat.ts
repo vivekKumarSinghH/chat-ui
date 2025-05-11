@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useState, useRef, useCallback, useEffect } from "react"
 import { initialData } from "@/lib/data"
-import { colors } from "@/lib/colors"
 import type { ChatData, Message } from "@/types/chat"
 
 export function useChat() {
@@ -51,12 +50,6 @@ export function useChat() {
     [data, newMessage, selectedUser, data.currentUser.id],
   )
 
-  // Get avatar gradient based on user ID for visual variety
-  const getAvatarGradient = useCallback((userId: number): string => {
-    const gradientKeys = Object.keys(colors.gradients) as Array<keyof typeof colors.gradients>
-    return colors.gradients[gradientKeys[userId % gradientKeys.length]]
-  }, [])
-
   return {
     data,
     selectedUser,
@@ -65,6 +58,5 @@ export function useChat() {
     setNewMessage,
     handleSendMessage,
     messagesEndRef,
-    getAvatarGradient,
   }
 }

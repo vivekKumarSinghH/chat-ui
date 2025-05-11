@@ -1,44 +1,45 @@
 "use client"
 
-import { cn } from "@/lib/utils"
 import { Phone, Video, MoreVertical } from "lucide-react"
-import Avatar from "@/components/chat/avatar"
-import IconButton from "@/components/chat/icon-button"
+import { Button } from "@/components/ui/button"
 import type { ChatData } from "@/types/chat"
-import type { ThemeColors } from "@/types/theme"
 
 interface ChatHeaderProps {
   data: ChatData
   selectedUser: number
-  theme: "light" | "dark"
-  currentTheme: ThemeColors
-  getAvatarGradient: (userId: number) => string
 }
 
-export default function ChatHeader({ data, selectedUser, theme, currentTheme, getAvatarGradient }: ChatHeaderProps) {
+export default function ChatHeader({ data, selectedUser }: ChatHeaderProps) {
   const selectedUserData = data.users.find((u) => u.id === selectedUser)
 
   return (
-    <div
-      className={cn(
-        "h-16 border-b flex items-center justify-between px-4 md:px-6 backdrop-blur-sm",
-        currentTheme.header,
-        currentTheme.border,
-      )}
-    >
+    <div className="h-16 border-b flex items-center justify-between px-4 md:px-6 bg-background/80 backdrop-blur-sm">
       <div className="flex items-center">
-        <Avatar userId={selectedUser} showStatus={true} data={data} getAvatarGradient={getAvatarGradient} />
+        <div className="relative">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium">
+            {selectedUserData?.avatar}
+          </div>
+          {selectedUserData?.online && (
+            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></span>
+          )}
+        </div>
         <div className="ml-3">
           <p className="font-medium">{selectedUserData?.name || "User"}</p>
-          <p className={cn("text-xs", currentTheme.textSecondary)}>
+          <p className="text-xs text-muted-foreground">
             {selectedUserData?.online ? "Online" : `Last seen ${selectedUserData?.lastSeen}`}
           </p>
         </div>
       </div>
       <div className="flex items-center space-x-2">
-        <IconButton icon={<Phone size={18} />} label="Voice call" className={currentTheme.hover} />
-        <IconButton icon={<Video size={18} />} label="Video call" className={currentTheme.hover} />
-        <IconButton icon={<MoreVertical size={18} />} label="More options" className={currentTheme.hover} />
+        <Button variant="ghost" size="icon" aria-label="Voice call">
+          <Phone size={18} />
+        </Button>
+        <Button variant="ghost" size="icon" aria-label="Video call">
+          <Video size={18} />
+        </Button>
+        <Button variant="ghost" size="icon" aria-label="More options">
+          <MoreVertical size={18} />
+        </Button>
       </div>
     </div>
   )
