@@ -4,9 +4,11 @@ import type React from "react"
 
 import { useState, useRef, useCallback, useEffect } from "react"
 import { initialData } from "@/lib/data"
+import { useToast } from "@/hooks/use-toast"
 import type { ChatData, Message } from "@/types/chat"
 
 export function useChat() {
+  const { toast } = useToast()
   const [data, setData] = useState<ChatData>(initialData)
   const [newMessage, setNewMessage] = useState<string>("")
   const [selectedUser, setSelectedUser] = useState<number>(2) // Default selected user
@@ -44,10 +46,17 @@ export function useChat() {
           },
         }))
 
+        // Show toast notification
+        toast({
+          title: "Message Sent",
+          description: `Message sent to ${data.users.find((u) => u.id === selectedUser)?.name}`,
+          duration: 1500,
+        })
+
         setNewMessage("")
       }
     },
-    [data, newMessage, selectedUser, data.currentUser.id],
+    [data, newMessage, selectedUser, data.currentUser.id, toast],
   )
 
   return {
