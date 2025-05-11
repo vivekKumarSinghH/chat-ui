@@ -59,6 +59,20 @@ export function useChat() {
     [data, newMessage, selectedUser, data.currentUser.id, toast],
   )
 
+  // Clear chat history for a specific user
+  const clearChatHistory = useCallback(
+    (userId: number): void => {
+      setData((prevData) => ({
+        ...prevData,
+        conversations: {
+          ...prevData.conversations,
+          [userId]: [],
+        },
+      }))
+    },
+    [setData],
+  )
+
   return {
     data,
     selectedUser,
@@ -67,5 +81,6 @@ export function useChat() {
     setNewMessage,
     handleSendMessage,
     messagesEndRef,
+    clearChatHistory,
   }
 }

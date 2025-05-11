@@ -27,8 +27,16 @@ export default function ChatContainer() {
   const { windowWidth, isMounted } = useWindowSize()
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
 
-  const { data, selectedUser, setSelectedUser, newMessage, setNewMessage, handleSendMessage, messagesEndRef } =
-    useChat()
+  const {
+    data,
+    selectedUser,
+    setSelectedUser,
+    newMessage,
+    setNewMessage,
+    handleSendMessage,
+    messagesEndRef,
+    clearChatHistory,
+  } = useChat()
 
   // Handle window resize for responsive sidebar
   useEffect(() => {
@@ -71,7 +79,7 @@ export default function ChatContainer() {
       {/* Main chat area */}
       <div className="flex-1 flex flex-col" role="main">
         {/* Chat header with selected user info */}
-        <ChatHeader data={data} selectedUser={selectedUser} />
+        <ChatHeader data={data} selectedUser={selectedUser} clearChatHistory={clearChatHistory} />
 
         {/* Messages area with animations */}
         <MessageList data={data} selectedUser={selectedUser} messagesEndRef={messagesEndRef} />
